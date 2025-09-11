@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea/
+# Ignore Angular cache
+.angular/cache/
+
+# Ignore Visual Studio folder
+.vs/
