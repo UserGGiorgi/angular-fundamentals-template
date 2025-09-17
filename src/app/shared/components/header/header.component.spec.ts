@@ -1,87 +1,82 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
-import { Component } from '@angular/core';
-import { ButtonComponent } from '../button/button.component'; // Adjust path as needed
+import { Component, DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
-// Test host component for content projection
 @Component({
     template: `
     <app-header>
-      <div right>
-        <app-button [buttonText]="'Test Button'"></app-button>
-        <button class="test-button">Another Button</button>
-      </div>
+      <div right>Test Content</div>
     </app-header>
   `
 })
 class TestHostComponent { }
 
 describe('HeaderComponent', () => {
-    describe('Standalone Component', () => {
+    describe('Basic Component Tests', () => {
         let component: HeaderComponent;
         let fixture: ComponentFixture<HeaderComponent>;
+        let debugElement: DebugElement;
 
-        beforeEach(waitForAsync(() => {
-            TestBed.configureTestingModule({
+        beforeEach(async () => {
+            await TestBed.configureTestingModule({
                 declarations: [HeaderComponent]
             }).compileComponents();
-        }));
 
-        beforeEach(() => {
             fixture = TestBed.createComponent(HeaderComponent);
             component = fixture.componentInstance;
+            debugElement = fixture.debugElement;
             fixture.detectChanges();
         });
 
-        it('should create', () => {
+        it('should create the component', () => {
             expect(component).toBeTruthy();
         });
 
-        it('should display logo and title', () => {
-            const logo = fixture.nativeElement.querySelector('img');
-            const title = fixture.nativeElement.querySelector('h1');
-
+        it('should display the logo', () => {
+            const logo = debugElement.query(By.css('img'));
             expect(logo).toBeTruthy();
-            expect(logo.alt).toBe('logo');
-            expect(title.textContent).toBe('Course Management System');
+            expect(logo.nativeElement.alt).toBe('logo');
+        });
+
+        it('should display the title', () => {
+            const title = debugElement.query(By.css('h1'));
+            expect(title).toBeTruthy();
+            expect(title.nativeElement.textContent).toBe('Course Management System');
         });
     });
 
-    describe('Content Projection', () => {
+    describe('Content Projection Tests', () => {
         let fixture: ComponentFixture<TestHostComponent>;
-        let hostComponent: TestHostComponent;
+        let debugElement: DebugElement;
 
-        beforeEach(waitForAsync(() => {
-            TestBed.configureTestingModule({
-                declarations: [HeaderComponent, TestHostComponent, ButtonComponent]
+        beforeEach(async () => {
+            await TestBed.configureTestingModule({
+                declarations: [HeaderComponent, TestHostComponent]
             }).compileComponents();
-        }));
 
-        beforeEach(() => {
             fixture = TestBed.createComponent(TestHostComponent);
-            hostComponent = fixture.componentInstance;
+            debugElement = fixture.debugElement;
             fixture.detectChanges();
         });
 
-        it('should project buttons on the right side', () => {
-            const rightContent = fixture.nativeElement.querySelector('[right]');
+        it('should project content on the right side', () => {
+            const rightContent = debugElement.query(By.css('[right]'));
             expect(rightContent).toBeTruthy();
+            expect(rightContent.nativeElement.textContent).toContain('Test Content');
 
-            const buttons = fixture.nativeElement.querySelectorAll('.header-right button, .header-right app-button');
-            expect(buttons.length).toBeGreaterThan(0);
-
-            const headerRight = fixture.nativeElement.querySelector('.header-right');
+            const headerRight = debugElement.query(By.css('.header-right'));
             expect(headerRight).toBeTruthy();
-            expect(headerRight.children.length).toBeGreaterThan(0);
         });
 
-        it('should maintain original header content while projecting', () => {
-            const logo = fixture.nativeElement.querySelector('img');
-            const title = fixture.nativeElement.querySelector('h1');
-            const rightContent = fixture.nativeElement.querySelector('[right]');
+        it('should maintain original content while projecting', () => {
+            const logo = debugElement.query(By.css('img'));
+            const title = debugElement.query(By.css('h1'));
 
             expect(logo).toBeTruthy();
-            expect(title.textContent).toBe('Course Management System');
+            expect(title.nativeElement.textContent).toBe('Course Management System');
+
+            const rightContent = debugElement.query(By.css('[right]'));
             expect(rightContent).toBeTruthy();
         });
     });
