@@ -17,8 +17,7 @@ export class RegistrationFormComponent {
                 Validators.minLength(6)
             ]),
             email: new FormControl('', [
-                Validators.required,
-                EmailValidatorDirective.emailValidator
+                Validators.required
             ]),
             password: new FormControl('', [
                 Validators.required

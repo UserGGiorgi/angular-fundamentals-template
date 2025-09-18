@@ -15,14 +15,14 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
     styleUrls: ['./course-form.component.scss'],
 })
 export class CourseFormComponent implements OnInit {
-    courseForm!: FormGroup;
+    form!: FormGroup;
 
     constructor(private fb: FormBuilder, public library: FaIconLibrary) {
         library.addIconPacks(fas);
     }
 
     ngOnInit(): void {
-        this.courseForm = this.fb.group({
+        this.form = this.fb.group({
             title: ['', Validators.required],
             description: ['', Validators.required],
             author: [''],
@@ -32,14 +32,14 @@ export class CourseFormComponent implements OnInit {
     }
 
     get authors(): FormArray {
-        return this.courseForm.get('authors') as FormArray;
+        return this.form.get('authors') as FormArray;
     }
 
     addAuthor(): void {
-        const authorName = this.courseForm.get('author')?.value?.trim();
+        const authorName = this.form.get('author')?.value?.trim();
         if (authorName) {
             this.authors.push(new FormControl(authorName));
-            this.courseForm.get('author')?.reset();
+            this.form.get('author')?.reset();
         }
     }
 
@@ -48,7 +48,7 @@ export class CourseFormComponent implements OnInit {
     }
 
     get durationInHours(): string {
-        const minutes = this.courseForm.get('duration')?.value;
+        const minutes = this.form.get('duration')?.value;
         if (!minutes) return '';
         const hrs = Math.floor(minutes / 60);
         const mins = minutes % 60;
@@ -56,10 +56,10 @@ export class CourseFormComponent implements OnInit {
     }
 
     onSubmit(): void {
-        if (this.courseForm.valid) {
-            console.log('Course Data:', this.courseForm.value);
+        if (this.form.valid) {
+            console.log('Course Data:', this.form.value);
         } else {
-            this.courseForm.markAllAsTouched();
+            this.form.markAllAsTouched();
         }
     }
 }
