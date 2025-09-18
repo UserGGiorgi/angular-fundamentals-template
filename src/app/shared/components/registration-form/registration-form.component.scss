@@ -1,9 +1,41 @@
 @import 'src/app/shared/styles/styles';
 
 .registration-form {
-  width: 260px;
-  margin-top: 36px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+	width: 260px;
+	margin-top: 36px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.form__control {
+	margin-bottom: 1rem;
+
+	input.error {
+		border-color: #e74c3c;
+	}
+}
+
+.text-danger {
+	color: #e74c3c;
+	font-size: 0.875rem;
+	display: block;
+	margin-top: 0.25rem;
+}
+
+.form__action {
+	margin-bottom: 1rem;
+}
+
+.form__text {
+	text-align: center;
+
+	a {
+		color: inherit;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 }

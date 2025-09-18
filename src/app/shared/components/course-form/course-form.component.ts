@@ -1,19 +1,65 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder, FormGroup
+    FormBuilder,
+    FormGroup,
+    FormArray,
+    FormControl,
+    Validators,
 } from '@angular/forms';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-course-form',
-  templateUrl: './course-form.component.html',
-  styleUrls: ['./course-form.component.scss'],
+    selector: 'app-course-form',
+    templateUrl: './course-form.component.html',
+    styleUrls: ['./course-form.component.scss'],
 })
-export class CourseFormComponent {
-  constructor(public fb: FormBuilder, public library: FaIconLibrary) {
-    library.addIconPacks(fas);
-  }
-  courseForm!: FormGroup;
-  // Use the names `title`, `description`, `author`, 'authors' (for authors list), `duration` for the form controls.
+export class CourseFormComponent implements OnInit {
+    courseForm!: FormGroup;
+
+    constructor(private fb: FormBuilder, public library: FaIconLibrary) {
+        library.addIconPacks(fas);
+    }
+
+    ngOnInit(): void {
+        this.courseForm = this.fb.group({
+            title: ['', Validators.required],
+            description: ['', Validators.required],
+            author: [''],
+            authors: this.fb.array([]),
+            duration: ['', Validators.required],
+        });
+    }
+
+    get authors(): FormArray {
+        return this.courseForm.get('authors') as FormArray;
+    }
+
+    addAuthor(): void {
+        const authorName = this.courseForm.get('author')?.value?.trim();
+        if (authorName) {
+            this.authors.push(new FormControl(authorName));
+            this.courseForm.get('author')?.reset();
+        }
+    }
+
+    removeAuthor(index: number): void {
+        this.authors.removeAt(index);
+    }
+
+    get durationInHours(): string {
+        const minutes = this.courseForm.get('duration')?.value;
+        if (!minutes) return '';
+        const hrs = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hrs}h ${mins}m`;
+    }
+
+    onSubmit(): void {
+        if (this.courseForm.valid) {
+            console.log('Course Data:', this.courseForm.value);
+        } else {
+            this.courseForm.markAllAsTouched();
+        }
+    }
 }
