@@ -26,6 +26,7 @@
                            id="email"
                            formControlName="email"
                            placeholder="Input text"
+                           appEmailValidator
                            [class.error]="(registrationForm.get('email')?.touched || registrationForm.get('email')?.dirty) && registrationForm.get('email')?.invalid" />
                     <span id="emailErrorMessage"
                           class="text-danger"
