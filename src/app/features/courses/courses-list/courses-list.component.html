@@ -1,11 +1,25 @@
-<div class="courses-list">
-    <h2>Courses List</h2>
+<div class="courses-header">
+    <div class="search-section">
+        <app-search (search)="onSearch($event)"></app-search>
+    </div>
+    <div class="add-course-section" *ngIf="isAdmin$ | async">
+        <button class="add-course-btn" (click)="onAddCourse()">Add Course</button>
+    </div>
+</div>
 
-    <div *ngIf="courses.length === 0" class="no-courses">
-        <p>No courses available.</p>
+<div class="courses-container">
+    <div class="loading" *ngIf="isLoading$ | async">Loading courses...</div>
+
+    <div class="no-courses" *ngIf="(courses$ | async)?.length === 0 && !(isLoading$ | async)">
+        No courses found
     </div>
 
-    <div *ngFor="let course of courses" class="course-item">
-        <app-course-card [course]="course"></app-course-card>
+    <div class="course-cards">
+        <app-course-card *ngFor="let course of courses$ | async"
+                         [course]="course"
+                         [isAdmin]="(isAdmin$ | async) ?? false"
+                         (edit)="onEditCourse(course.id)"
+                         (show)="onShowCourse(course.id)"
+                         (delete)="onDeleteCourse(course.id)"></app-course-card>
     </div>
 </div>

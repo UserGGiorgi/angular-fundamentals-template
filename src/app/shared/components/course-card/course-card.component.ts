@@ -1,39 +1,54 @@
-import { Component, Input } from '@angular/core';
-import { mockedAuthorsList } from '../../mocks/mocks';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+export interface Course {
+    id: string;
+    title: string;
+    description: string;
+    duration: number;
+    creationDate: string | Date;
+    authors: any[];
+}
+
 @Component({
     selector: 'app-course-card',
     templateUrl: './course-card.component.html',
     styleUrls: ['./course-card.component.scss']
 })
 export class CourseCardComponent {
-    @Input() course: any;
+    @Input() course!: Course;
+    @Input() isAdmin!: boolean;
+    @Output() edit = new EventEmitter<string>();
+    @Output() show = new EventEmitter<string>();
+    @Output() delete = new EventEmitter<string>();
 
     getAuthorsNames(): string {
-        if (!this.course?.authors) return 'Unknown authors';
-
-        return this.course.authors.map((authorId: string) => {
-            const author = mockedAuthorsList.find(a => a.id === authorId);
-            return author ? author.name : 'Unknown Author';
-        }).join(', ');
+        if (!this.course.authors || this.course.authors.length === 0) {
+            return 'No authors';
+        }
+        return this.course.authors.map(author => author.name).join(', ');
     }
 
-    getFormattedDuration(): string {
-        if (!this.course?.duration) return 'Unknown duration';
-
-        const hours = Math.floor(this.course.duration / 60);
-        const minutes = this.course.duration % 60;
-
-        return hours > 0 ? `${hours}h ${minutes}min` : `${minutes}min`;
+    onEdit(): void {
+        this.edit.emit(this.course.id);
     }
+
+    onShow(): void {
+        this.show.emit(this.course.id);
+    }
+
+    onDelete(): void {
+        this.delete.emit(this.course.id);
+    }
+
     showCourse(): void {
-        console.log('Show course:', this.course?.id);
+        this.show.emit(this.course.id);
     }
 
     editCourse(): void {
-        console.log('Edit course:', this.course?.id);
+        this.edit.emit(this.course.id);
     }
 
     deleteCourse(): void {
-        console.log('Delete course:', this.course?.id);
+        this.delete.emit(this.course.id);
     }
 }
