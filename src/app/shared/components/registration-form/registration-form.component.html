@@ -3,6 +3,11 @@
     <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
         <div class="registration-form">
             <div>
+                <!-- Error Message -->
+                <div *ngIf="errorMessage" class="error-message">
+                    {{ errorMessage }}
+                </div>
+
                 <!-- Name Field -->
                 <div class="form__control">
                     <label for="name">Name</label>
@@ -15,24 +20,23 @@
                           class="text-danger"
                           *ngIf="(registrationForm.get('name')?.touched || registrationForm.get('name')?.dirty) && registrationForm.get('name')?.invalid">
                         <span *ngIf="registrationForm.get('name')?.errors?.['required']">Name is required.</span>
-                        <span *ngIf="registrationForm.get('name')?.errors?.['minlength']">Name should not be less than 6 symbols.</span>
+                        <span *ngIf="registrationForm.get('name')?.errors?.['minlength']">Name should be at least 2 characters.</span>
                     </span>
                 </div>
 
                 <!-- Email Field -->
                 <div class="form__control">
                     <label for="email">Email</label>
-                    <input type="text"
+                    <input type="email"
                            id="email"
                            formControlName="email"
                            placeholder="Input text"
-                           appEmailValidator
                            [class.error]="(registrationForm.get('email')?.touched || registrationForm.get('email')?.dirty) && registrationForm.get('email')?.invalid" />
                     <span id="emailErrorMessage"
                           class="text-danger"
                           *ngIf="(registrationForm.get('email')?.touched || registrationForm.get('email')?.dirty) && registrationForm.get('email')?.invalid">
                         <span *ngIf="registrationForm.get('email')?.errors?.['required']">Email is required.</span>
-                        <span *ngIf="registrationForm.get('email')?.errors?.['invalidEmail']">Please enter a valid email address.</span>
+                        <span *ngIf="registrationForm.get('email')?.errors?.['email']">Please enter a valid email address.</span>
                     </span>
                 </div>
 
@@ -48,14 +52,15 @@
                           class="text-danger"
                           *ngIf="(registrationForm.get('password')?.touched || registrationForm.get('password')?.dirty) && registrationForm.get('password')?.invalid">
                         <span *ngIf="registrationForm.get('password')?.errors?.['required']">Password is required.</span>
+                        <span *ngIf="registrationForm.get('password')?.errors?.['minlength']">Password should be at least 4 characters.</span>
                     </span>
                 </div>
             </div>
             <div>
                 <div class="form__action">
-                    <app-button [buttonText]="'REGISTER'"
+                    <app-button [buttonText]="isLoading ? 'REGISTERING...' : 'REGISTER'"
                                 type="submit"
-                                [disabled]="registrationForm.invalid">
+                                [disabled]="registrationForm.invalid || isLoading">
                     </app-button>
                 </div>
                 <div class="form__text">

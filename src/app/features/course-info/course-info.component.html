@@ -1,17 +1,23 @@
-<!-- Replace ::text:: with your code -->
+<div class="title" *ngIf="course$ | async as course">{{ course.title || 'No title' }}</div>
 
-<div class="title">::Title::</div>
-<div class="course-info">
-  <div class="course-info__description">
-    ::Description::
-  </div>
-  <div class="course-info__info">
-    <div><b>ID: </b><span class="course-info__info-id">::id::</span></div>
-    <div><b>Duration: </b><span class="course-info__info-duration">::duration::</span></div>
-    <div><b>Created: </b><span class="course-info__info-date">::date::</span></div>
-    <div><b>Authors: </b><span class="course-info__info-authors">::authors::</span></div>
-  </div>
+<div class="course-info" *ngIf="course$ | async as course; else loading">
+    <div class="course-info__description">
+        {{ course.description || 'No description' }}
+    </div>
+    <div class="course-info__info">
+        <div><b>ID: </b><span class="course-info__info-id">{{ course.id || 'No ID' }}</span></div>
+        <div><b>Duration: </b><span class="course-info__info-duration">{{ course.duration | duration }}</span></div>
+        <div><b>Created: </b><span class="course-info__info-date">{{ course.creationDate | customDate }}</span></div>
+        <div><b>Authors: </b><span class="course-info__info-authors">{{ getAuthorsNames(course.authors) }}</span></div>
+    </div>
 </div>
+
+<ng-template #loading>
+    <div class="loading" *ngIf="isLoading$ | async">
+        Loading course details...
+    </div>
+</ng-template>
+
 <div class="navigation-block">
-  <!--Enter your code here-->
+    <button routerLink="/courses" class="back-button">Back to Courses</button>
 </div>

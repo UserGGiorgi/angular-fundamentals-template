@@ -3,6 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '@shared/shared.module';
+
+// Add these NgRx imports
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects'; // Add this import
+
 import { AppComponent } from '@app/app.component';
 import { CourseInfoComponent } from '@features/course-info/course-info.component';
 import { NotAuthorizedGuard } from '@app/auth/guards/not-authorized.guard';
@@ -17,6 +22,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { TokenInterceptor } from './auth/interceptors/token.interceptor';
 import { AuthService } from './auth/services/auth.service';
 import { SessionStorageService } from './auth/services/session-storage.service';
+import { reducers, effects } from './store';
 
 @NgModule({
     declarations: [
@@ -30,6 +36,8 @@ import { SessionStorageService } from './auth/services/session-storage.service';
         AppRoutingModule,
         SharedModule,
         FontAwesomeModule,
+        StoreModule.forRoot(reducers),
+        EffectsModule.forRoot(effects),
     ],
     providers: [
         AuthorizedGuard,

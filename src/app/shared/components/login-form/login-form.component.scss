@@ -30,3 +30,14 @@
 .form__text {
 	text-align: center;
 }
+
+.registration-link {
+	color: #007bff;
+	text-decoration: underline;
+	cursor: pointer;
+
+	&:hover {
+		color: #0056b3;
+		text-decoration: none;
+	}
+}

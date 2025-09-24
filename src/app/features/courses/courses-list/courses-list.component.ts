@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Course } from '../../../services/courses.service';
-import { CoursesStoreService } from '../../../services/courses-store.service';
+import { CoursesStateFacade } from '../../../store/courses/courses.facade';
 import { UserStoreService } from '../../../user/services/user-store.service';
 
 @Component({
@@ -18,17 +18,17 @@ export class CoursesListComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();
 
     constructor(
-        private coursesStore: CoursesStoreService,
+        private coursesFacade: CoursesStateFacade,
         private userStore: UserStoreService,
         private router: Router
     ) {
-        this.courses$ = this.coursesStore.courses$;
-        this.isLoading$ = this.coursesStore.isLoading$;
+        this.courses$ = this.coursesFacade.courses$;
+        this.isLoading$ = this.coursesFacade.isAllCoursesLoading$;
         this.isAdmin$ = this.userStore.isAdmin$;
     }
 
     ngOnInit(): void {
-        this.coursesStore.getAll();
+        this.coursesFacade.getAllCourses();
         this.userStore.getUser();
     }
 
@@ -39,9 +39,9 @@ export class CoursesListComponent implements OnInit, OnDestroy {
 
     onSearch(value: string): void {
         if (value) {
-            this.coursesStore.filterCourses(value);
+            this.coursesFacade.getFilteredCourses(value);
         } else {
-            this.coursesStore.getAll();
+            this.coursesFacade.getAllCourses();
         }
     }
 
@@ -59,7 +59,7 @@ export class CoursesListComponent implements OnInit, OnDestroy {
 
     onDeleteCourse(courseId: string): void {
         if (confirm('Are you sure you want to delete this course?')) {
-            this.coursesStore.deleteCourse(courseId).subscribe();
+            this.coursesFacade.deleteCourse(courseId);
         }
     }
 }
